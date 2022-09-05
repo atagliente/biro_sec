@@ -1,4 +1,4 @@
-package it.biro.biro_sec.beans;
+package it.biro.biro_sec.controllers;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
