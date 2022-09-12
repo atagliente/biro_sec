@@ -1,4 +1,4 @@
-package it.biro.biro_sec.controllers.repositories;
+package it.biro.biro_sec.repositories;
 
 import it.biro.biro_sec.entities.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,9 +10,9 @@ import java.util.Set;
 public interface RoleRepository extends JpaRepository<Role, Integer> {
 
     @Query(
-            value = "SELECT * FROM role WHERE id NOT IN (SELECT role_id FROM user_role WHERE user_id = ?1)",
+            value = "SELECT * FROM role WHERE id NOT IN (SELECT role_id FROM role_users WHERE user_id = ?1)",
             nativeQuery = true
     )
-    Set<Role> getUserNotRoles(final Integer id);
+    Set<Role> getUserNotRoles(final Long id);
 
 }

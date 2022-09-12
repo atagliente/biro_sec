@@ -6,48 +6,48 @@ BEGIN;
 
 -- DROP DATABASE IF EXISTS rbac;
 
-CREATE DATABASE rbac
-    WITH
-    OWNER = postgres
-    ENCODING = 'UTF8'
-    LC_COLLATE = 'Italian_Italy.1252'
-    LC_CTYPE = 'Italian_Italy.1252'
-    TABLESPACE = pg_default
-    CONNECTION LIMIT = -1;
+-- CREATE DATABASE rbac
+--     WITH
+--     OWNER = postgres
+--     ENCODING = 'UTF8'
+--     LC_COLLATE = 'Italian_Italy.1252'
+--     LC_CTYPE = 'Italian_Italy.1252'
+--     TABLESPACE = pg_default
+--     CONNECTION LIMIT = -1;
 
 CREATE TABLE IF NOT EXISTS public.permission
 (
-    id bigint NOT NULL,
-    name "char"[] NOT NULL,
+    id SERIAL NOT NULL,
+    name varchar NOT NULL,
     PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS public.role
 (
-    id bigint NOT NULL,
-    name "char"[] NOT NULL,
+    id SERIAL NOT NULL,
+    name varchar NOT NULL,
     PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS public.role_permission
 (
-    id bigint NOT NULL,
-    name "char"[] NOT NULL,
+    id SERIAL NOT NULL,
+    name varchar NOT NULL,
     role_id bigint NOT NULL,
     permission_id bigint NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS public."user"
+CREATE TABLE IF NOT EXISTS public.account
 (
-    id bigint NOT NULL,
-    "username" "char"[] NOT NULL,
-    password "char"[] NOT NULL,
+    id SERIAL NOT NULL,
+    "username" varchar NOT NULL,
+    password varchar NOT NULL,
     PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS public.role_users
 (
-    id bigint NOT NULL,
+    id SERIAL NOT NULL,
     role_id bigint NOT NULL,
     user_id bigint NOT NULL,
     PRIMARY KEY (id)
@@ -79,7 +79,7 @@ ALTER TABLE IF EXISTS public.role_users
 
 ALTER TABLE IF EXISTS public.role_users
     ADD FOREIGN KEY (user_id)
-    REFERENCES public."user" (id) MATCH SIMPLE
+    REFERENCES public.account (id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION
     NOT VALID;

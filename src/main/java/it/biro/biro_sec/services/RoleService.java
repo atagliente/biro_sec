@@ -1,9 +1,9 @@
-package it.biro.biro_sec.controllers.services;
+package it.biro.biro_sec.services;
 
-import it.biro.biro_sec.controllers.repositories.RoleRepository;
-import it.biro.biro_sec.controllers.repositories.UserRepository;
+import it.biro.biro_sec.entities.Account;
+import it.biro.biro_sec.repositories.RoleRepository;
+import it.biro.biro_sec.repositories.AccountRepository;
 import it.biro.biro_sec.entities.Role;
-import it.biro.biro_sec.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class RoleService {
     private RoleRepository roleRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private AccountRepository accountRepository;
 
     public List<Role> findAll() {
         return roleRepository.findAll();
@@ -40,15 +40,15 @@ public class RoleService {
         roleRepository.save(role);
     }
 
-    public void assignUserRole(final Integer userId, final Integer roleId){
-        Optional<User> user  = userRepository.findById(userId);
+    public void assignUserRole(final Long userId, final Integer roleId){
+        Optional<Account> user  = accountRepository.findById(userId);
         Optional<Role> role = roleRepository.findById(roleId);
         if (role.isPresent()) {
             if (user.isPresent()) {
                 Set<Role> userRoles = user.get().getRoles();
                 userRoles.add(role.get());
                 user.get().setRoles(userRoles);
-                userRepository.save(user.get());
+                accountRepository.save(user.get());
             } else {
                 logger.error("USER {} ISN'T PRESENT!!!", userId);
             }
@@ -57,22 +57,22 @@ public class RoleService {
         }
     }
 
-    public void unassignUserRole(final Integer userId, final Integer roleId){
-        Optional<User> user  = userRepository.findById(userId);
+    public void unassignUserRole(final Long userId, final Long roleId){
+        Optional<Account> user  = accountRepository.findById(userId);
         if (user.isPresent()) {
             user.get().getRoles().removeIf(x -> x.getId()==roleId);
-            userRepository.save(user.get());
+            accountRepository.save(user.get());
         } else {
             logger.error("USER {} ISN'T PRESENT!!!", userId);
         }
     }
 
-    public Set<Role> getUserRoles(final User user){
-        return user.getRoles();
+    public Set<Role> getUserRoles(final Account account){
+        return account.getRoles();
     }
 
-    public Set<Role> getUserNotRoles(final User user){
-        return roleRepository.getUserNotRoles(user.getId());
+    public Set<Role> getUserNotRoles(final Account account){
+        return roleRepository.getUserNotRoles(account.getId());
     }
 
 }

@@ -1,8 +1,8 @@
 package it.biro.biro_sec.controllers.rbac;
 
-import it.biro.biro_sec.controllers.services.RoleService;
-import it.biro.biro_sec.controllers.services.UserService;
-import it.biro.biro_sec.entities.User;
+import it.biro.biro_sec.services.RoleService;
+import it.biro.biro_sec.services.AccountService;
+import it.biro.biro_sec.entities.Account;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +22,11 @@ public class RoleController {
     private RoleService roleService;
 
     @Autowired
-    private UserService userService;
+    private AccountService accountService;
 
     @GetMapping("/security/user/Edit/{id}")
-    public String editUser(@PathVariable Integer id, Model model){
-        Optional<User> user = userService.findById(id);
+    public String editUser(@PathVariable Long id, Model model){
+        Optional<Account> user = accountService.findById(id);
         if (user.isPresent()) {
             model.addAttribute("user", user);
             model.addAttribute("userRoles", roleService.getUserRoles(user.get()));

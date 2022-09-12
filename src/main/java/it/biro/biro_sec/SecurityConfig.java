@@ -1,43 +1,22 @@
-package it.biro.biro_sec.controllers;
+package it.biro.biro_sec;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.util.UUID;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import it.biro.biro_sec.filters.JWTFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
-import org.springframework.security.oauth2.core.oidc.OidcScopes;
-import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.config.ClientSettings;
-import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -48,7 +27,52 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 @EnableJpaRepositories
 public class SecurityConfig {
 
+    @Autowired
+    private JWTFilter filter;
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
+
     @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf().disable() // Disabling csrf
+                .httpBasic().disable() // Disabling http basic
+                .cors() // Enabling cors
+                .and()
+                .authorizeHttpRequests() // Authorizing incoming requests
+                .antMatchers("/api/auth/**").permitAll() // Allows auth requests to be made without authentication of any sort
+                .antMatchers("/api/user/**").hasRole("USER") // Allows only users with the "USER" role to make requests to the user routes
+                .and()
+                .userDetailsService(userDetailsService) // Setting the user details service to the custom implementation
+                .exceptionHandling()
+                .authenticationEntryPoint(
+                        // Rejecting request as unauthorized when entry point is reached
+                        // If this point is reached it means that the current request requires authentication
+                        // and no JWT token was found attached to the Authorization header of the current request.
+                        (request, response, authException) ->
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
+                )
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // Setting Session to be stateless
+
+        // Adding the JWT filter
+        http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    /*@Bean
     @Order
     //https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
@@ -63,9 +87,9 @@ public class SecurityConfig {
                 );
 
         return http.build();
-    }
+    }*/
 
-    @Bean
+    /*@Bean
     @Order
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
             throws Exception {
@@ -78,9 +102,9 @@ public class SecurityConfig {
                 .formLogin(Customizer.withDefaults());
 
         return http.build();
-    }
+    }*/
 
-    @Bean
+    /*@Bean
     public UserDetailsService userDetailsService() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //String currentPrincipalName = authentication.getName();
@@ -145,7 +169,7 @@ public class SecurityConfig {
     @Bean
     public ProviderSettings providerSettings() {
         return ProviderSettings.builder().build();
-    }
+    }*/
 
 }
 
