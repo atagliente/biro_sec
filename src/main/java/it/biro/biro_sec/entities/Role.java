@@ -1,7 +1,10 @@
 package it.biro.biro_sec.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table
@@ -16,11 +19,13 @@ public class Role {
     private Collection<Account> accounts;
 
     @ManyToMany
+    @JsonIgnore
     @JoinTable(
-            name = "roles_permission",
+            name = "role_permission",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id"))
-    private Collection<Permission> privileges;
+
+    private Collection<Permission> permissions;
 
     public Long getId() {
         return this.id;
@@ -41,4 +46,13 @@ public class Role {
     public void setName(String name) {
         this.name = name;
     }
+
+    public Collection<Permission> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Collection<Permission> permissions) {
+        this.permissions = permissions;
+    }
+
 }

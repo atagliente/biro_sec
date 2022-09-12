@@ -1,5 +1,4 @@
 package it.biro.biro_sec.controllers.rbac;
-
 import it.biro.biro_sec.services.RoleService;
 import it.biro.biro_sec.services.AccountService;
 import it.biro.biro_sec.entities.Account;
@@ -30,7 +29,6 @@ public class RoleController {
         if (user.isPresent()) {
             model.addAttribute("user", user);
             model.addAttribute("userRoles", roleService.getUserRoles(user.get()));
-            model.addAttribute("userNotRoles", roleService.getUserNotRoles(user.get()));
         } else {
             logger.error("USER {} ISN'T PRESENT!!!", id);
         }

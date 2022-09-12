@@ -6,11 +6,8 @@ import javax.persistence.*;
 public class Permission {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
-
-//    @ManyToMany(mappedBy = "privileges")
-//    private Collection<Role> roles;
 
 }

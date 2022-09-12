@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class CustomUserDetailsService implements UserDetailsService {
@@ -30,6 +31,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
                 username,
                 account.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))); // Sets the role of the found user
+                account.getRoles().stream().map(x -> new SimpleGrantedAuthority(x.getName())).collect(Collectors.toList())); // Sets the role of the found user
     }
 }
