@@ -19,6 +19,12 @@ BEGIN;
 -- Please log an issue at https://redmine.postgresql.org/projects/pgadmin4/issues/new if you find any bugs, including reproduction steps.
 BEGIN;
 
+CREATE SEQUENCE IF NOT EXISTS account_id_seq;
+CREATE SEQUENCE IF NOT EXISTS permission_id_seq;
+CREATE SEQUENCE IF NOT EXISTS role_id_seq;
+CREATE SEQUENCE IF NOT EXISTS role_users_id_seq;
+CREATE SEQUENCE IF NOT EXISTS role_permission_id_seq;
+
 
 CREATE TABLE IF NOT EXISTS public.account
 (
