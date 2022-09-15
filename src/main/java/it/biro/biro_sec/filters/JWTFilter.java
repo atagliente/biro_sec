@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 
 @Component
 public class JWTFilter extends OncePerRequestFilter {
@@ -59,7 +60,11 @@ public class JWTFilter extends OncePerRequestFilter {
             }
         }
 
-        // Continuing the execution of the filter chain
-        filterChain.doFilter(request, response);
+        try {
+            filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            logger.error("Access request error");
+        }
+
     }
 }

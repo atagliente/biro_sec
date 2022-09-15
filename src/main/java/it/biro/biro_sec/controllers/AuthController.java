@@ -31,42 +31,26 @@ public class AuthController {
     private AccountService accountService;
 
     @PostMapping("/register")
-    public Map<String, Object> registerHandler(@RequestBody Account account){
-        // Encoding Password using Bcrypt
+    public Map<String, String> registerHandler(@RequestBody Account account){
         String encodedPass = passwordEncoder.encode(account.getPassword());
-
-        // Setting the encoded password
         account.setPassword(encodedPass);
-
-        // Persisting the User Entity to H2 Database
         account = accountService.save(account);
 
-        // Generating JWT
-        String token = jwtUtil.generateToken(account.getUsername());
-
-        // Responding with JWT
-        return Collections.singletonMap("jwt-token", token);
+        return jwtUtil.generateTokens(account.getUsername(), true);
     }
 
     @PostMapping("/login")
-    public Map<String, Object> loginHandler(@RequestBody LoginCredentials body){
+    public Map<String, String> loginHandler(@RequestBody LoginCredentials body){
         try {
             // Creating the Authentication Token which will contain the credentials for authenticating
             // This token is used as input to the authentication process
             UsernamePasswordAuthenticationToken authInputToken =
                     new UsernamePasswordAuthenticationToken(body.getUsername(), body.getPassword());
 
-            // Authenticating the Login Credentials
             authenticationManager.authenticate(authInputToken);
 
-            // If this point is reached it means Authentication was successful
-            // Generate the JWT
-            String token = jwtUtil.generateToken(body.getUsername());
-
-            // Respond with the JWT
-            return Collections.singletonMap("jwt-token", token);
+            return jwtUtil.generateTokens(body.getUsername(), true);
         }catch (AuthenticationException authExc){
-            // Auhentication Failed
             throw new RuntimeException("Invalid Login Credentials");
         }
     }
