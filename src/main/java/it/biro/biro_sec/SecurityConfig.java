@@ -2,6 +2,8 @@ package it.biro.biro_sec;
 
 import com.nimbusds.jose.shaded.json.JSONObject;
 import it.biro.biro_sec.filters.JWTFilter;
+import it.biro.biro_sec.services.AccountService;
+import it.biro.biro_sec.services.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +35,7 @@ public class SecurityConfig {
     @Autowired
     private JWTFilter JWTfilter;
     @Autowired
-    private CustomUserDetailsService userDetailsService;
+    private AccountService accountService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -45,7 +47,7 @@ public class SecurityConfig {
                 .antMatchers("/api/auth/**").permitAll() // Allows auth requests to be made without authentication of any sort
                 .antMatchers("/api/user/**").hasRole("USER") // Allows only users with the "USER" role to make requests to the user routes
                 .and()
-                .userDetailsService(userDetailsService) // Setting the user details service to the custom implementation
+                .userDetailsService(accountService) // Setting the user details service to the custom implementation
                 .exceptionHandling()
                 .authenticationEntryPoint(
                         // Rejecting request as unauthorized when entry point is reached

@@ -1,7 +1,7 @@
 package it.biro.biro_sec.filters;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import it.biro.biro_sec.CustomUserDetailsService;
+import it.biro.biro_sec.services.AccountService;
 import it.biro.biro_sec.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,13 +15,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 
 @Component
 public class JWTFilter extends OncePerRequestFilter {
 
     @Autowired
-    private CustomUserDetailsService userDetailsService;
+    private AccountService accountService;
     @Autowired
     private JWTUtil jwtUtil;
 
@@ -43,11 +42,11 @@ public class JWTFilter extends OncePerRequestFilter {
                     String username = jwtUtil.validateTokenAndRetrieveSubject(jwt);
 
                     // Fetch User Details
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    UserDetails accountDetails = accountService.loadUserByUsername(username);
 
                     // Create Authentication Token
                     UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(username, userDetails.getPassword(), userDetails.getAuthorities());
+                            new UsernamePasswordAuthenticationToken(username, accountDetails.getPassword(), accountDetails.getAuthorities());
 
                     // Setting the authentication on the Security Context using the created token
                     if(SecurityContextHolder.getContext().getAuthentication() == null){
