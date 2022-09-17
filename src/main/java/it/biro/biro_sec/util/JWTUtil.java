@@ -7,24 +7,36 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.google.crypto.tink.CleartextKeysetHandle;
+import com.google.crypto.tink.JsonKeysetReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.xml.bind.DatatypeConverter;
+import java.io.File;
 import java.util.*;
 
 @Component
 public class JWTUtil {
 
+    private static final Logger logger = LoggerFactory.getLogger(JWTUtil.class);
+
     @Value("${jwt.secret}")
     private String secret;
-
+    @Value("${jwt.cipher.key.path}")
+    private String cipherKeyPath;
     @Value("${jwt.expiration.time}")
     private String expirationTime;
     @Value("${jwt.refresh.expiration.time}")
     private String refreshTokenExpirationTime;
-
     @Value("${jwt.issuer}")
     private String issuer;
+    @Autowired
+    private TokenCipher tokenCipher;
+
     private final String USERNAME_CLAIM = "username";
 
     public Map<String, String> generateTokens(String login, boolean useRefreshToken) {
@@ -54,10 +66,11 @@ public class JWTUtil {
             Date expirationDate = c.getTime();
             tokenBuilder.withExpiresAt(expirationDate);
         }
-        return tokenBuilder.sign(Algorithm.HMAC256(secret));
+        return cipherToken(tokenBuilder.sign(Algorithm.HMAC256(secret)));
     }
 
     public String validateTokenAndRetrieveSubject(String token)throws JWTVerificationException {
+        token = decipherToken(DatatypeConverter.parseString(token));
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secret))
                 .withIssuer(issuer)
                 .withSubject("User Details")
@@ -65,4 +78,25 @@ public class JWTUtil {
         DecodedJWT jwt = verifier.verify(token);
         return jwt.getClaim(USERNAME_CLAIM).asString();
     }
+
+    private String cipherToken(String token) {
+        try {
+            return tokenCipher.cipherToken(token, CleartextKeysetHandle.read(
+                    JsonKeysetReader.withFile(new File(cipherKeyPath))));
+        } catch (Exception e) {
+            logger.error("Cipher key is NOT valid");
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String decipherToken(String token) {
+        try {
+            return tokenCipher.decipherToken(token, CleartextKeysetHandle.read(
+                    JsonKeysetReader.withFile(new File(cipherKeyPath))));
+        } catch (Exception e) {
+            logger.error("Cipher key is NOT valid");
+            throw new RuntimeException(e);
+        }
+    }
+
 }
