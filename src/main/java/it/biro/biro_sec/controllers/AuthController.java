@@ -1,10 +1,12 @@
 package it.biro.biro_sec.controllers;
 
 
-import it.biro.biro_sec.services.AccountService;
 import it.biro.biro_sec.entities.Account;
+import it.biro.biro_sec.services.AccountService;
+import it.biro.biro_sec.services.RevokedTokenService;
 import it.biro.biro_sec.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @RestController
@@ -29,6 +31,8 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private RevokedTokenService revokedTokenService;
 
     @PostMapping("/register")
     public Map<String, String> registerHandler(@RequestBody Account account){
@@ -54,6 +58,16 @@ public class AuthController {
             throw new RuntimeException("Invalid Login Credentials");
         }
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logoutHandler(HttpServletRequest request) {
+        // token verify already done
+        String authHeader = request.getHeader("Authorization");
+        String token = authHeader.substring(7);
+        revokedTokenService.revoke(token);
+        return ResponseEntity.ok().build();
+    }
+
 }
 
 class LoginCredentials {

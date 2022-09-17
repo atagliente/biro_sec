@@ -2,6 +2,7 @@ package it.biro.biro_sec.filters;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import it.biro.biro_sec.services.AccountService;
+import it.biro.biro_sec.services.RevokedTokenService;
 import it.biro.biro_sec.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,25 +24,27 @@ public class JWTFilter extends OncePerRequestFilter {
     private AccountService accountService;
     @Autowired
     private JWTUtil jwtUtil;
+    @Autowired
+    private RevokedTokenService revokedTokenService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // Extracting the "Authorization" header
         String authHeader = request.getHeader("Authorization");
 
-        // Checking if the header contains a Bearer token
-        if(authHeader != null && !authHeader.isBlank() && authHeader.startsWith("Bearer ")){
+        if(authHeader != null && !authHeader.isBlank() && authHeader.startsWith("Bearer ")) {
             // Extract JWT
             String jwt = authHeader.substring(7);
-            if(jwt.isBlank()){
+            if (jwt.isBlank()) {
                 // Invalid JWT
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT Token in Bearer Header");
-            }else {
-                try{
+            } else {
+                try {
+                    if (revokedTokenService.findByJWTtokenDigest(jwt).isPresent())
+                        throw new JWTVerificationException("Token revoked");
+
                     // Verify token and extract username
                     String username = jwtUtil.validateTokenAndRetrieveSubject(jwt);
 
-                    // Fetch User Details
                     UserDetails accountDetails = accountService.loadUserByUsername(username);
 
                     // Create Authentication Token
@@ -49,15 +52,15 @@ public class JWTFilter extends OncePerRequestFilter {
                             new UsernamePasswordAuthenticationToken(username, accountDetails.getPassword(), accountDetails.getAuthorities());
 
                     // Setting the authentication on the Security Context using the created token
-                    if(SecurityContextHolder.getContext().getAuthentication() == null){
+                    if (SecurityContextHolder.getContext().getAuthentication() == null) {
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     }
-                }catch(JWTVerificationException exc){
-                    // Failed to verify JWT
+                } catch (JWTVerificationException exc) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT Token");
                 }
             }
         }
+
 
         try {
             filterChain.doFilter(request, response);

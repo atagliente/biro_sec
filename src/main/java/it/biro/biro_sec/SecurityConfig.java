@@ -1,9 +1,7 @@
 package it.biro.biro_sec;
 
-import com.nimbusds.jose.shaded.json.JSONObject;
 import it.biro.biro_sec.filters.JWTFilter;
 import it.biro.biro_sec.services.AccountService;
-import it.biro.biro_sec.services.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,12 +14,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.http.HttpServletResponse;
-import java.time.LocalDateTime;
 
 @Configuration
 @EnableWebSecurity
@@ -44,6 +40,7 @@ public class SecurityConfig {
                 .cors() // Enabling cors
                 .and()
                 .authorizeHttpRequests() // Authorizing incoming requests
+                .antMatchers("/api/auth/logout").hasRole("USER") // Allows only users with the "USER" role to make logout request
                 .antMatchers("/api/auth/**").permitAll() // Allows auth requests to be made without authentication of any sort
                 .antMatchers("/api/user/**").hasRole("USER") // Allows only users with the "USER" role to make requests to the user routes
                 .and()

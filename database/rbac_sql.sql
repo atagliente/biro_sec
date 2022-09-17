@@ -24,6 +24,8 @@ CREATE SEQUENCE IF NOT EXISTS permission_id_seq;
 CREATE SEQUENCE IF NOT EXISTS role_id_seq;
 CREATE SEQUENCE IF NOT EXISTS role_users_id_seq;
 CREATE SEQUENCE IF NOT EXISTS role_permission_id_seq;
+CREATE SEQUENCE IF NOT EXISTS revoked_token_id_seq;
+
 
 
 CREATE TABLE IF NOT EXISTS public.account
@@ -63,6 +65,14 @@ CREATE TABLE IF NOT EXISTS public.role_permission
     permission_id bigint NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS public.revoked_token
+(
+    id integer NOT NULL DEFAULT nextval('revoked_token_id_seq'::regclass),
+    jwt_token_digest character varying COLLATE pg_catalog."default" NOT NULL,
+    revocation_date timestamp default now()
+);
+
+ALTER TABLE public.role_account DROP CONSTRAINT IF EXISTS role_users_role_id_fkey;
 ALTER TABLE IF EXISTS public.role_account
     ADD CONSTRAINT role_users_role_id_fkey FOREIGN KEY (role_id)
         REFERENCES public.role (id) MATCH SIMPLE
@@ -71,6 +81,7 @@ ALTER TABLE IF EXISTS public.role_account
         NOT VALID;
 
 
+ALTER TABLE public.role_account DROP CONSTRAINT IF EXISTS role_users_user_id_fkey;
 ALTER TABLE IF EXISTS public.role_account
     ADD CONSTRAINT role_users_user_id_fkey FOREIGN KEY (user_id)
         REFERENCES public.account (id) MATCH SIMPLE
@@ -79,14 +90,16 @@ ALTER TABLE IF EXISTS public.role_account
         NOT VALID;
 
 
+ALTER TABLE public.role_permission DROP CONSTRAINT IF EXISTS role_permission_permission_id_fkey;
 ALTER TABLE IF EXISTS public.role_permission
     ADD CONSTRAINT role_permission_permission_id_fkey FOREIGN KEY (permission_id)
         REFERENCES public.permission (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
         NOT VALID;
+z\
 
-
+ALTER TABLE public.role_permission DROP CONSTRAINT IF EXISTS role_permission_role_id_fkey;
 ALTER TABLE IF EXISTS public.role_permission
     ADD CONSTRAINT role_permission_role_id_fkey FOREIGN KEY (role_id)
         REFERENCES public.role (id) MATCH SIMPLE
