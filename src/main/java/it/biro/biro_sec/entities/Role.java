@@ -15,6 +15,8 @@ public class Role {
     private Long id;
     private String name;
 
+    private boolean deleted;
+
     @ManyToMany(mappedBy = "roles")
     private Collection<Account> accounts;
 
@@ -53,6 +55,26 @@ public class Role {
 
     public void setPermissions(Collection<Permission> permissions) {
         this.permissions = permissions;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Collection<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(Collection<Account> accounts) {
+        this.accounts = accounts;
     }
 
 }

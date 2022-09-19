@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -32,8 +33,16 @@ public class RoleService {
         return roleRepository.findById(id);
     }
 
-    public void delete(final int id) {
-        roleRepository.deleteById(id);
+    public Collection<Role> findByName(final String name) {
+        return roleRepository.findByName(name);
+    }
+
+    public Collection<Role> getRoles() {
+        return roleRepository.getRoles();
+    }
+
+    public void delete(final String name) {
+        roleRepository.deleteByName(name);
     }
 
     public void save(final Role role) {
