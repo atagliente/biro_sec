@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+
+  db:
+    image: postgres
+    restart: always
+    env_file:
+        - database.env
+    volumes:
+        # execute script .sh or .sql at first run
+        - /database/rbac_sql.sql:/docker-entrypoint-initdb.d/rbac_sql.sql
+        # save db data on host
+        - ./postgres-data:/var/lib/postgresql/data
+    ports:
+        - '5438:5432'
+        
+  app:
+    image: biro/sec_app
+    restart: always
+    ports:
+        - '9000:9000'
