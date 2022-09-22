@@ -8,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -25,20 +23,8 @@ public class RoleService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public List<Role> findAll() {
+    public List<Role> getRoles() {
         return roleRepository.findAll();
-    }
-
-    public Optional<Role> findById(final int id) {
-        return roleRepository.findById(id);
-    }
-
-    public Collection<Role> findByName(final String name) {
-        return roleRepository.findByName(name);
-    }
-
-    public Collection<Role> getRoles() {
-        return roleRepository.getRoles();
     }
 
     public void delete(final String name) {
@@ -65,23 +51,5 @@ public class RoleService {
             logger.error("ROLE {} ISN'T PRESENT!!!", roleId);
         }
     }
-
-    public void unassignUserRole(final Long userId, final Long roleId){
-        Optional<Account> user  = accountRepository.findById(userId);
-        if (user.isPresent()) {
-            user.get().getRoles().removeIf(x -> x.getId()==roleId);
-            accountRepository.save(user.get());
-        } else {
-            logger.error("USER {} ISN'T PRESENT!!!", userId);
-        }
-    }
-
-    public Set<Role> getUserRoles(final Account account){
-        return account.getRoles();
-    }
-
-    public Set<Role> getUserNotRoles(final Account account){
-        return roleRepository.getUserNotRoles(account.getId());
-    }
-
+    
 }

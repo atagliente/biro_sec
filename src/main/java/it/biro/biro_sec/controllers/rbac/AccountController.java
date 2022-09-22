@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/account")
 public class AccountController {
 
     @Autowired
     private AccountService accountService;
 
-    @GetMapping("/info")
-    public Account getUserDetails(){
+    @GetMapping("/")
+    public Account getAccount(){
         String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return accountService.findByUsername(username).orElse(null);
     }

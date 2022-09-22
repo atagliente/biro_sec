@@ -9,7 +9,7 @@ services:
         - database.env
     volumes:
         # execute script .sh or .sql at first run
-        - /database/rbac_sql.sql:/docker-entrypoint-initdb.d/rbac_sql.sql
+        - ./database/rbac_sql.sql:/docker-entrypoint-initdb.d/rbac_sql.sql
         # save db data on host
         - ./postgres-data:/var/lib/postgresql/data
     ports:
@@ -17,6 +17,10 @@ services:
         
   app:
     image: biro/sec_app
+    depends_on:
+      - db
+    volumes:
+      - ./keyset_test.json:/workspace/keyset_test.json
     restart: always
     ports:
         - '9000:9000'
