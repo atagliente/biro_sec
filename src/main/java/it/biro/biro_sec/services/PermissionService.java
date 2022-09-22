@@ -19,14 +19,6 @@ public class PermissionService {
     @Autowired
     private PermissionRepository permissionRepository;
 
-    public Optional<Permission> findById(final int id) {
-        return permissionRepository.findById(id);
-    }
-
-    public List<Permission> findByName(final String name) {
-        return permissionRepository.getByName(name);
-    }
-
     public List<Permission> getPermissions () {
         return permissionRepository.findAll();
     }

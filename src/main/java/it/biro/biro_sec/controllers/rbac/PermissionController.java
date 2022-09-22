@@ -26,7 +26,7 @@ public class PermissionController {
         return permissionService.getPermissions();
     }
 
-    @GetMapping("/all")
+    @GetMapping("/")
     public @ResponseBody List<Permission> all(){
         return permissionService.getPermissions();
     }

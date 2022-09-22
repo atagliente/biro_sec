@@ -19,13 +19,13 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
-    @PostMapping ("/create")
+    @PutMapping ("/")
     public @ResponseBody List<Role> create(@RequestBody Role role){
         roleService.save(role);
         return roleService.getRoles();
     }
 
-    @GetMapping("/all")
+    @GetMapping("/")
     public @ResponseBody List<Role> all(){
         return roleService.getRoles();
     }

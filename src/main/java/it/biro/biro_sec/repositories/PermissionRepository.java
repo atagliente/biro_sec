@@ -12,10 +12,6 @@ import java.util.Set;
 @Repository
 public interface PermissionRepository extends JpaRepository<Permission, Integer> {
 
-    Set<Permission> getPermissionById(final Long id);
-
-    List<Permission> getByName(final String name);
-
     List<Permission> findAll();
 
     @Modifying
