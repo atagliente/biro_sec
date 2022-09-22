@@ -9,6 +9,7 @@ public class BiroSecApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BiroSecApplication.class, args);
+		System.out.println("VERSION-0.0.1");
 	}
 
 }

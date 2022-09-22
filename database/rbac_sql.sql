@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS public.account
     id integer NOT NULL DEFAULT nextval('account_id_seq'::regclass),
     username character varying COLLATE pg_catalog."default" NOT NULL,
     password character varying COLLATE pg_catalog."default" NOT NULL,
+    deleted bool NULL DEFAULT false,
     CONSTRAINT account_pkey PRIMARY KEY (id)
 );
 
@@ -40,6 +41,7 @@ CREATE TABLE IF NOT EXISTS public.permission
 (
     id integer NOT NULL DEFAULT nextval('permission_id_seq'::regclass),
     name character varying COLLATE pg_catalog."default" NOT NULL,
+    deleted bool NULL DEFAULT false,
     CONSTRAINT permission_pkey PRIMARY KEY (id)
 );
 
@@ -47,6 +49,7 @@ CREATE TABLE IF NOT EXISTS public.role
 (
     id integer NOT NULL DEFAULT nextval('role_id_seq'::regclass),
     name character varying COLLATE pg_catalog."default" NOT NULL,
+    deleted bool NULL DEFAULT false,
     CONSTRAINT role_pkey PRIMARY KEY (id)
 );
 

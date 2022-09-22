@@ -1,13 +1,222 @@
 {
 	"info": {
-		"_postman_id": "d616119d-3889-4fcb-940c-9fe5d03c6620",
+		"_postman_id": "355861fd-dd80-4fd5-a949-4b7c13d0d083",
 		"name": "BIRO",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20759335"
 	},
 	"item": [
 		{
 			"name": "security",
 			"item": [
+				{
+					"name": "role",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"DYNO\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:9000/api/role/",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"api",
+										"role",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/api/role/DYNO",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"api",
+										"role",
+										"DYNO"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "all",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/api/role/",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"api",
+										"role",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "permission",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"DYNOP\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:9000/api/permission/",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"api",
+										"permission",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/api/permission/DYNO",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"api",
+										"permission",
+										"DYNO"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "all",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/api/permission/",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"api",
+										"permission",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
 				{
 					"name": "get user info",
 					"request": {
@@ -16,7 +225,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "012BDD5C5B0272B2AD8B4D43D0073DAF42495396084F7E51CC573D65B957880EC3E73F1EA432719CFD4A6E507E5C498AA5B5D144905F629C261A71ACFB7053203C4ACFB290DB45A0B0A29B2065720BC4BA77B5A81971E121A4468334612AA444D95D4A1DE30E201C1EFE82504E9D85BCF35FF6953C1E7A5A0D87B852BEA2A688DB21DF10DB7738A2BE455E0DAC9B70B90BEFA4B7A275BADAE0EFA447E33B311AFC394FDA1B3CA9DD44D65786615A24D27950D452EABD127B125E6ABE548D6FECB1A016126BAE4BBFBEA26002F560F98ACC1BA86E4B50F3B229BB332BECC4A3BE85D0225F9A82B4E830F9B9EE31BE4CB195C1293EB83F15D0D9F1FC9843",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -45,7 +254,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"reg1\",\n    \"password\": \"pw\"\n}",
+							"raw": "{\n    \"username\": \"reg2\",\n    \"password\": \"pw\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -69,12 +278,24 @@
 				},
 				{
 					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"token\", jsonData.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"reg1\",\n    \"password\": \"pw\"\n}",
+							"raw": "{\n    \"username\": \"reg2\",\n    \"password\": \"pw\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -104,7 +325,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "012BDD5C5B0272B2AD8B4D43D0073DAF42495396084F7E51CC573D65B957880EC3E73F1EA432719CFD4A6E507E5C498AA5B5D144905F629C261A71ACFB7053203C4ACFB290DB45A0B0A29B2065720BC4BA77B5A81971E121A4468334612AA444D95D4A1DE30E201C1EFE82504E9D85BCF35FF6953C1E7A5A0D87B852BEA2A688DB21DF10DB7738A2BE455E0DAC9B70B90BEFA4B7A275BADAE0EFA447E33B311AFC394FDA1B3CA9DD44D65786615A24D27950D452EABD127B125E6ABE548D6FECB1A016126BAE4BBFBEA26002F560F98ACC1BA86E4B50F3B229BB332BECC4A3BE85D0225F9A82B4E830F9B9EE31BE4CB195C1293EB83F15D0D9F1FC9843",
+									"value": "012BDD5C5B8FCDDCDD3999CDCF35253A17E6265569FAD393F25474A3BE95B188948B6F734242E9A45C020B81090137259B0E0E77034A144611672D2A7FA78A6DEBE0BB8D54760BAF46120D5036590839EE3A78EE35629490FFF9E4C5FC9AEACDE718758843A68A8CB55A01064BD6A8CDD2945ECE1E4C2D56CB92755E83B2AA812468FF9B0227B56D860E5916E55473318706CC5784DFBCB5B62C80FADC4737DE7636B576CA6008A942AF93B4310842FA775D86AA3742DA0F7786D70B03E2D541BEEB066F6FAA0DFE2147B1ED5F3C392B893F34DF33FD1653D9AB7653886DD822CA7B171D5DF44E07D5A67CAD1613BD40E220E0DDC450240E6BE249DA36",
 									"type": "string"
 								}
 							]
